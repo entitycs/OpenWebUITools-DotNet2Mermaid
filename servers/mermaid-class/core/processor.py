@@ -6,14 +6,6 @@ from typing import List
 from .models import DiagramItem, BulkDiagramResponse
 from .parser import generate_mermaid_from_csharp
 from .utils import normalize_path, logger
-# Anywhere in the project
-# from core import (
-#     normalize_path,
-#     DiagramItem,
-#     BulkDiagramResponse,
-#     generate_mermaid_from_csharp,
-#     logger
-# )
 
 def process_folder_bulk(
     folder_path: str,
@@ -65,4 +57,3 @@ def process_folder_bulk(
         truncated=processed >= max_files,
         total_scanned=total_scanned,
     )
-

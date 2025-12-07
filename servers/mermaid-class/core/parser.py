@@ -1,6 +1,6 @@
 import re
 import os
-from .utils import _strip_generics, logger
+from .utils import _strip_generics, _strip_comments
 
 def generate_mermaid_from_csharp(
     file_path: str,
@@ -32,10 +32,10 @@ def generate_mermaid_from_csharp(
     attribute_pattern = re.compile(r"^\s*\[([^\]]+)\]\s*")
 
     for m in full_pattern.finditer(code):
-        modifiers = m.group(2) or ""
+        modifiers = _strip_comments(m.group(2)) or ""
         class_name = _strip_generics(m.group(4))
-        bases = m.group(5)
-        raw_attribs = m.group(1)
+        bases = _strip_comments(m.group(5))
+        raw_attribs = _strip_comments(m.group(1))
 
         mermaid.append(f"class {class_name}")
         if include_abstracts and "abstract" in modifiers:
@@ -49,7 +49,6 @@ def generate_mermaid_from_csharp(
 
         for attr in attribute_pattern.findall(raw_attribs):
             clean = attr.strip().replace('"', "'")
-            mermaid.append(f"note for {class_name} \"{clean}\"")
+            mermaid.append(f'note for {class_name} "{clean}"')
 
     return "\n".join(mermaid)
-
