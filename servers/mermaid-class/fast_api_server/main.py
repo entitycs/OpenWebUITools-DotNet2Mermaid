@@ -1,3 +1,12 @@
+"""
+title: Bulk Mermaid Class Diagrams
+author: EntityCS
+description: This tool creates Mermaid Class Diagrams from an existing csharp codebase.
+required_open_webui_version: 0.4.0
+requirements: fastapi, starlette, pydantic
+version: 0.0.2
+licence: MIT
+"""
 from fastapi import FastAPI, Body, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.requests import Request
@@ -54,4 +63,3 @@ async def bulk_class_diagram(data: BatchCreateClassDiagramRequest = Body(...)):
         include_interfaces=data.include_interfaces,
         include_abstracts=data.include_abstracts,
     )
-
