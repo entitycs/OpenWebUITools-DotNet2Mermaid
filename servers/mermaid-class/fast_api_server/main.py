@@ -13,6 +13,8 @@ from starlette.requests import Request
 from starlette.responses import StreamingResponse
 
 from core import (
+    DiagramItem,
+    DiagramItemRequest,
     BulkDiagramResponse,
     BatchCreateClassDiagramRequest,
     process_folder_bulk,
@@ -57,9 +59,30 @@ async def log_requests(request: Request, call_next):
 
 @app.post("/bulk_class_diagram", response_model=BulkDiagramResponse)
 async def bulk_class_diagram(data: BatchCreateClassDiagramRequest = Body(...)):
+    """
+    Creates a list of Mermaid Class Diagrams given a folder path containing c or dotnet code.
+    
+    :param data: Request object containing user config parameters
+    :type data: BatchCreateClassDiagramRequest
+    """
     return process_folder_bulk(
         folder_path=normalize_path(data.folder_path),
         max_files=data.max_files,
         include_interfaces=data.include_interfaces,
         include_abstracts=data.include_abstracts,
+    )
+
+@app.post("/class_diagram", response_model=DiagramItem)
+async def class_diagram(data: DiagramItemRequest = Body(...)):
+    """
+    Creates a single Mermaid Class Diagram given a file path containing c or dotnet code.
+    
+    :param data: Request object containing user config parameters
+    :type data
+    """
+    return process_folder_bulk(
+        folder_path=data.path,
+        max_files=1,
+        include_interfaces=True,
+        include_abstracts=True
     )

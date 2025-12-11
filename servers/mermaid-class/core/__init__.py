@@ -5,6 +5,7 @@
 from .utils import normalize_path, _strip_generics, logger
 from .models import (
     DiagramItem,
+    DiagramItemRequest,
     BulkDiagramResponse,
     BatchCreateClassDiagramRequest,
 )
@@ -16,6 +17,7 @@ __all__ = [
     "_strip_generics",
     "logger",
     "DiagramItem",
+    "DiagramItemRequest",
     "BulkDiagramResponse",
     "BatchCreateClassDiagramRequest",
     "generate_mermaid_from_csharp",

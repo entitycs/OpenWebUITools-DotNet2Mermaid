@@ -17,21 +17,36 @@ def process_folder_bulk(
     Shared bulk processing logic.
     Used by both FastAPI and MCP servers.
     """
+    diagrams: List[DiagramItem] = []
+    processed = 0
+    total_scanned = 0
     folder_path = normalize_path(folder_path)
 
     if not folder_path.exists():
         raise ValueError(f"Folder not found: {folder_path}")
     if not folder_path.is_dir():
-        raise ValueError(f"Not a directory: {folder_path}")
+        if folder_path.is_file():
+            folder_path = str(folder_path)
+            total_scanned = 1
+            try:
+                raw_diagram = generate_mermaid_from_csharp(
+                    folder_path,
+                    include_interfaces=include_interfaces,
+                    include_abstracts=include_abstracts,
+                )
+                diagrams.append(DiagramItem(file=folder_path, mermaid=raw_diagram))
 
-    diagrams: List[DiagramItem] = []
-    processed = 0
-    total_scanned = 0
+            except (ValueError, RuntimeError) as exc:
+                raise ValueError(f"File not readable: {folder_path} - {exc}")
+
+            return diagrams[0]
+
 
     for root, _, files in os.walk(folder_path):
+        total_scanned += 1
         for file in sorted(files):
             if file.endswith(".cs") and not file.endswith(".g.cs") and "obj" not in root.split(os.sep):
-                total_scanned += 1
+                processed += 1
                 full_path = pathlib.Path(root) / file
                 rel_path = full_path.relative_to(folder_path).as_posix()
                 try:

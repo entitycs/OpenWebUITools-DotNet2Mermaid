@@ -1,12 +1,13 @@
 import re
 import os
-from .utils import _strip_generics, _strip_comments
+from .utils import _strip_generics, _strip_comments, logger
 
 def generate_mermaid_from_csharp(
     file_path: str,
     include_interfaces: bool = True,
     include_abstracts: bool = True,
 ) -> str:
+    logger.info(f"attempting read of {file_path}")
     if not os.path.isfile(file_path):
         raise ValueError(f"Not a file: {file_path}")
     try:
@@ -48,7 +49,7 @@ def generate_mermaid_from_csharp(
                     mermaid.append(f"{clean_base} <|-- {class_name}")
 
         for attr in attribute_pattern.findall(raw_attribs):
-            clean = attr.strip().replace('"', "'")
-            mermaid.append(f'note for {class_name} "{clean}"')
+            # clean = attr.strip().replace('"', "'")
+            mermaid.append(f'  note for {class_name} "{attr}"')
 
     return "\n".join(mermaid)
