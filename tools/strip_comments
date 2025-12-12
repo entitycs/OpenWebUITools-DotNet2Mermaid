@@ -1,0 +1,19 @@
+strip_comments() {
+  perl -0777 -CS -pe '
+    s/\x00//g;
+    s/(\/\/[^\n]*|\/\*([^*\/]+|[^*]\/|[*])*\*\/)//g;
+  '
+}
+
+
+git_diff_no_comments() {
+  git diff --no-index --color --ignore-blank-lines \
+    <(git show HEAD:"$1" | strip_comments) \
+    <(strip_comments < "$1") 
+}
+
+git ls-files | while read -r f; do
+    git_diff_no_comments "$f"
+done
+
+
