@@ -1,0 +1,4 @@
+[diff "nocomments"]
+    textconv = ./tools/strip_comments
+
+
