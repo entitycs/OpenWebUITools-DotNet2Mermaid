@@ -20,13 +20,13 @@ def process_folder_bulk(
     diagrams: List[DiagramItem] = []
     processed = 0
     total_scanned = 0
-    folder_path = normalize_path(folder_path)
+    path = normalize_path(folder_path)
 
-    if not folder_path.exists():
+    if not path.exists():
         raise ValueError(f"Folder not found: {folder_path}")
-    if not folder_path.is_dir():
-        if folder_path.is_file():
-            folder_path = str(folder_path)
+    if not path.is_dir():
+        if path.is_file():
+            folder_path = str(path)
             total_scanned = 1
             try:
                 raw_diagram = generate_mermaid_from_csharp(

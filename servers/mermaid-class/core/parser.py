@@ -52,4 +52,4 @@ def generate_mermaid_from_csharp(
             # clean = attr.strip().replace('"', "'")
             mermaid.append(f'  note for {class_name} "{attr}"')
 
-    return "\n".join(mermaid)
+    return " \n ".join(mermaid)

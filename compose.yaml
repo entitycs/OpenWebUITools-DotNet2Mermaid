@@ -1,0 +1,59 @@
+services:
+  mermaid-openapi:
+    build:
+      context: ./servers/mermaid-class
+    command: uvicorn fast_api_server.main:app --host 0.0.0.0 --port 8000
+    volumes:
+      #- &ssm /mnt/e/VaM-D-Latest/Custom/Scripts/EntityCX/SimpleStateMachine/src:/workspace/src/ssm
+      - &ssm "${E_ROOT}${PROJECT_1}:/workspace/src/ssm"
+      - &unity "${C_ROOT}${PROJECT_2}:/workspace/src/UnityAssets"
+    ports:
+      - 8084:8000
+    networks:
+      - mynet
+  mermaid-mcp:
+    build:
+      context: ./servers/mermaid-class
+    command: python -m fast_mcp_server.main
+    volumes:
+      - *ssm
+      - *unity
+    ports:
+      - 8085:8000
+    networks:
+      - mynet
+    depends_on:
+      - mermaid-openapi
+  grep-serv-openapi:
+    build:
+      context: ./servers/grep-search-container
+    command: uvicorn fast_api_server.main:app --host 0.0.0.0 --port 8000
+    volumes:
+      - *ssm
+      - *unity
+    networks:
+      - mynet
+    ports:
+      - 8088:8000
+  grep-serv-mcp:
+    build:
+      context: ./servers/grep-search-container
+    command: python -m fast_mcp_server.main
+    volumes:
+      - *ssm
+      - *unity
+    ports: 
+      - 8081:8000
+    networks:
+      - mynet
+    depends_on:
+      - grep-serv-openapi
+
+
+networks:
+  mynet:
+    driver: bridge
+
+
+volumes:
+  memory:
